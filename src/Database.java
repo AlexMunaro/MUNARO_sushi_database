@@ -82,4 +82,54 @@ public class Database {
 
         return true;
     }
+
+    public boolean update(int id, String nuovoNome, float nuovoPrezzo, int nuovaQuantita) {
+        try {
+            if (connection == null || !connection.isValid(5)) {
+                System.err.println("Errore di connessione al database");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore di connessione al database");
+            return false;
+        }
+
+        String query = "UPDATE menu SET piatto = ?, prezzo = ?, quantita = ? WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, nuovoNome);
+            statement.setFloat(2, nuovoPrezzo);
+            statement.setInt(3, nuovaQuantita);
+            statement.setInt(4, id);
+            int rows = statement.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            System.err.println("Errore di query: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean delete(int id) {
+        try {
+            if (connection == null || !connection.isValid(5)) {
+                System.err.println("Errore di connessione al database");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore di connessione al database");
+            return false;
+        }
+
+        String query = "DELETE FROM menu WHERE id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            int rows = statement.executeUpdate();
+            return rows > 0;
+        } catch (SQLException e) {
+            System.err.println("Errore di query: " + e.getMessage());
+            return false;
+        }
+    }
+
 }
